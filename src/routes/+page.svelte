@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { testData } from '../__mocks__/test.ts';
+	import { testData } from '../__mocks__/test';
 	console.log(testData);
 </script>
 
