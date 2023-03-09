@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { testData } from '../__mocks__/test';
-	console.log(testData);
+	import { cityMap } from '../__mocks__/withCity';
+
+	console.log(cityMap);
 </script>
 
 <h1>Welcome to SvelteKit</h1>
