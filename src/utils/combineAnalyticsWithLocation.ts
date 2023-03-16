@@ -3,9 +3,9 @@ import { testData } from '../__mocks__/test';
 console.log(cityMap);
 console.log(testData);
 type Location = { lat: number; lng: number; country: string };
-
-export const activityWithLatLng = testData.rows
-  .map((place) => {
+export type RowData = {dimensionValues:[{value:string}, {value:string}]; metricValues: [ {value:string}]}[]
+export const activityWithLatLng = (rowData:RowData) => 
+  rowData.map((place) => {
     const country = place.dimensionValues[0].value;
     const city = place.dimensionValues[1].value;
 
@@ -16,7 +16,7 @@ export const activityWithLatLng = testData.rows
       locationData = cityMap.get(city) as Location;
     }
 
-    console.log(locationData);
+    // console.log(locationData);
 
     if (!locationData) {
       console.log(`place not found in DB ${country} - ${city}`);
