@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Theme from '../../components/Theme/Theme.svelte'
 	import { onMount } from 'svelte';
 	import Globe from 'globe.gl';
 	import * as d3 from 'd3';
@@ -13,14 +14,14 @@
 		const myGlobe = document.getElementById('globe');
 		console.log(myGlobe);
 
-		const weightColor = d3.scaleSequentialSqrt(d3.interpolateYlOrRd).domain([0, 1e7]);
+		const weightColor = d3.scaleSequentialSqrt(d3.interpolateYlOrRd).domain([0, 1e2]);
 
 		const world = Globe()(myGlobe)
 			.globeImageUrl(earthNight)
 			.bumpImageUrl(earthTopology)
 			.backgroundImageUrl(nightSky)
 			.hexBinPointWeight('pop')
-			.hexAltitude((d) => d.sumWeight * 6e-8)
+			.hexAltitude((d) => d.sumWeight * 10e-3)
 			.hexBinResolution(4)
 			.hexTopColor((d) => weightColor(d.sumWeight))
 			.hexSideColor((d) => weightColor(d.sumWeight))
@@ -37,6 +38,8 @@
 		world.controls().autoRotateSpeed = 0.6;
 	});
 </script>
+
+<Theme />
 
 <div id="globe" class="globe" />
 
