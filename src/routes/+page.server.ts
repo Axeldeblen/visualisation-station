@@ -1,8 +1,9 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './globe/$types';
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
-import credentials from '../../../credentials.json'
+import credentials from '../../credentials.json'
 import { error } from '@sveltejs/kit';
-import { activityWithLatLng, type RowData } from '../../utils/combineAnalyticsWithLocation';
+import { activityWithLatLng, type RowData } from '../utils/combineAnalyticsWithLocation';
+import { POLL_INVALIDATION } from '../constants';
 const analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
 
 const realTimeCityArgs = {
@@ -22,7 +23,8 @@ const realTimeCityArgs = {
   ]
 }
 
-export const load = (async () => {
+export const load = (async ({ depends }) => {
+  depends(POLL_INVALIDATION)
 
   try {
     const [response] = await analyticsDataClient.runRealtimeReport({
