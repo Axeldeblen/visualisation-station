@@ -3,7 +3,7 @@ import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import credentials from '../../credentials.json'
 import { error } from '@sveltejs/kit';
 import { activityWithLatLng, type RowData } from '../utils/combineAnalyticsWithLocation';
-import { POLL_INVALIDATION } from '../constants';
+import { REALTIME_REPORT_INVALIDATION } from '../constants';
 const analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
 
 const realTimeCityArgs = {
@@ -24,7 +24,7 @@ const realTimeCityArgs = {
 }
 
 export const load = (async ({ depends }) => {
-  depends(POLL_INVALIDATION)
+  depends(REALTIME_REPORT_INVALIDATION)
 
   try {
     const [response] = await analyticsDataClient.runRealtimeReport({
@@ -34,6 +34,7 @@ export const load = (async ({ depends }) => {
 
 
     return {
+      activeUsers: response.rows?.reduce((acc, { metricValues }) => acc + Number(metricValues?.[0].value), 0) || 0,
       globeActivity: activityWithLatLng(response.rows as RowData)
     }
   } catch (er) {

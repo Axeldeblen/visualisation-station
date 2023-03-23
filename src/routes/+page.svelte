@@ -7,11 +7,13 @@
 	import nightSky from '../assets/images/night-sky.png';
 	import { onMount } from 'svelte';
 	import { poll } from '../utils/pollReport';
-	import { MINUTE, POLL_INVALIDATION } from '../constants';
+	import { MINUTE, REALTIME_REPORT_INVALIDATION } from '../constants';
+	import { invalidate } from '$app/navigation';
+	import LiveUserCounter from '../components/LiveUserCounter.svelte';
 
 	export let data;
 
-	poll(POLL_INVALIDATION, 20 * MINUTE);
+	poll(REALTIME_REPORT_INVALIDATION, 20 * MINUTE);
 
 	$: console.log(data);
 
@@ -44,11 +46,34 @@
 	});
 </script>
 
-<div id="globe" class="globe" />
+<div class="wrapper">
+	<div id="globe" class="globe" />
+
+	<button on:click={() => invalidate(REALTIME_REPORT_INVALIDATION)}> Refresh </button>
+	<div class="counter-wrap">
+		<LiveUserCounter userCount={data.activeUsers} />
+	</div>
+</div>
 
 <style lang="scss">
 	.globe {
 		width: 100%;
 		height: 100%;
+	}
+	.wrapper {
+		position: relative;
+	}
+
+	.counter-wrap {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+	}
+
+	button {
+		// This button could be sexier
+		position: absolute;
+		top: 20px;
+		right: 20px;
 	}
 </style>
