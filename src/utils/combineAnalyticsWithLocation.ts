@@ -1,10 +1,11 @@
 import { cityMap } from '../cityLocationData';
-import { testData } from '../__mocks__/test';
-console.log(cityMap);
-console.log(testData);
+
 type Location = { lat: number; lng: number; country: string };
-export type RowData = {dimensionValues:[{value:string}, {value:string}]; metricValues: [ {value:string}]}[]
-export const activityWithLatLng = (rowData:RowData) => 
+export type RowData = { dimensionValues: [{ value: string }, { value: string }]; metricValues: [{ value: string }] }[]
+
+const LETS_MAKE_THIS_MAP_SPIKEY = 10000;
+
+export const activityWithLatLng = (rowData: RowData) =>
   rowData.map((place) => {
     const country = place.dimensionValues[0].value;
     const city = place.dimensionValues[1].value;
@@ -25,12 +26,11 @@ export const activityWithLatLng = (rowData:RowData) =>
     return {
       city,
       ...locationData,
-      pop: place.metricValues[0].value
+      pop: Number(place.metricValues[0].value) * LETS_MAKE_THIS_MAP_SPIKEY
     };
   })
-  .filter((singleLocationData) => 'lat' in singleLocationData && 'lng' in singleLocationData);
+    .filter((singleLocationData) => 'lat' in singleLocationData && 'lng' in singleLocationData);
 
 // TODO probably should check for duplicates too and group ones without a city
 
 
- 
