@@ -5,20 +5,21 @@ import { error } from '@sveltejs/kit';
 import { activityWithLatLng, type RowData } from '../../utils/combineAnalyticsWithLocation';
 const analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
 
-const realTimeCityArgs = { "dimensions": [
-  {
-    "name": "country"
-  },
-  {
-    "name": "city"
-  } 
-],
-"metrics": [
-  {
-    "name": "activeUsers",
-    "type": "TYPE_INTEGER"
-  }
-]
+const realTimeCityArgs = {
+  "dimensions": [
+    {
+      "name": "country"
+    },
+    {
+      "name": "city"
+    }
+  ],
+  "metrics": [
+    {
+      "name": "activeUsers",
+      "type": "TYPE_INTEGER"
+    }
+  ]
 }
 
 export const load = (async () => {
@@ -31,10 +32,14 @@ export const load = (async () => {
 
 
     return {
-      globeActivity: activityWithLatLng(response.rows as RowData) 
+      globeActivity: activityWithLatLng(response.rows as RowData)
     }
   } catch (er) {
-    console.log(er);
-    throw error(500, er?.message || 'Failed to load analytics data')
+    console.error(er);
+    if (er instanceof Error) {
+      throw error(500, er?.message || 'Failed to load analytics data')
+    } else {
+      throw error(500, 'Failed to load analytics data')
+    }
   }
 }) satisfies PageServerLoad;
