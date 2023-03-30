@@ -11,9 +11,7 @@
 	import { invalidate } from '$app/navigation';
 	import LiveUserCounter from '../components/LiveUserCounter.svelte';
 	import Theme from '../components/Theme.svelte';
-	import HoveringCoords from '../components/HoveringCoords.svelte';
 	import Logo from '../components/Logo.svelte';
-	import { writable } from 'svelte/store';
 
 	export let data;
 
