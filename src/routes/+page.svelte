@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Globe from 'globe.gl';
+	import Globe, { type GlobeInstance } from 'globe.gl';
 	import * as d3 from 'd3';
 
 	import earthNight from '../assets/images/earth-night.jpg';
@@ -11,21 +11,26 @@
 	import { invalidate } from '$app/navigation';
 	import LiveUserCounter from '../components/LiveUserCounter.svelte';
 	import Theme from '../components/Theme.svelte';
+	import HoveringCoords from '../components/HoveringCoords.svelte';
 	import Logo from '../components/Logo.svelte';
+	import { writable } from 'svelte/store';
 
 	export let data;
 
 	poll(REALTIME_REPORT_INVALIDATION, 20 * MINUTE);
 
 	$: console.log(data);
+	let globe: GlobeInstance;
+
+	let location: string;
 
 	onMount(() => {
-		const myGlobe = document.getElementById('globe');
+		const myGlobe = document.getElementById('globe') as HTMLDivElement;
 		console.log(myGlobe);
 
 		const weightColor = d3.scaleSequentialSqrt(d3.interpolateYlOrRd).domain([0, 1e7]);
 
-		const world = Globe()(myGlobe)
+		globe = Globe()(myGlobe)
 			.globeImageUrl(earthNight)
 			.bumpImageUrl(earthTopology)
 			.backgroundImageUrl(nightSky)
@@ -34,17 +39,24 @@
 			.hexBinResolution(4)
 			.hexTopColor((d) => weightColor(d.sumWeight))
 			.hexSideColor((d) => weightColor(d.sumWeight))
-			.hexBinMerge(true)
-			.enablePointerInteraction(false);
+			// .hexBinMerge(true)
+			.enablePointerInteraction(true)
+			.onHexHover((current) => {
+				if (current && current?.points?.[0]) {
+					location = current?.points?.[0]?.country
+						? `${current?.points?.[0]?.country} - ${current?.points?.[0]?.city}`
+						: `${current?.points?.[0]?.city}`;
+				}
+			});
 
 		// fetch('./world_population.csv').then(res => res.text())
 		//     .then(csv => d3.csvParse(csv, ({ lat, lng, pop }) => ({ lat: +lat, lng: +lng, pop: +pop })))
 		//     .then(data => world.hexBinPointsData(data));
 
-		world.hexBinPointsData(data.globeActivity);
+		globe.hexBinPointsData(data.globeActivity);
 
-		world.controls().autoRotate = true;
-		world.controls().autoRotateSpeed = 0.6;
+		globe.controls().autoRotate = true;
+		globe.controls().autoRotateSpeed = 0.6;
 	});
 </script>
 
@@ -55,6 +67,13 @@
 	<button on:click={() => invalidate(REALTIME_REPORT_INVALIDATION)}> Refresh </button>
 	<div class="counter-wrap">
 		<LiveUserCounter userCount={data.activeUsers} />
+	</div>
+	<div class="hover-wrap">
+		{#if location}
+			<p>
+				{location}
+			</p>
+		{/if}
 	</div>
 	<div class="logo">
 		<Logo />
@@ -70,6 +89,13 @@
 		position: relative;
 	}
 
+	p {
+		margin: 0;
+		padding: 20px;
+		color: var(--primary-text-color);
+		background-color: var(--primary-background-color);
+	}
+
 	.logo {
 		position: absolute;
 		top: 40px;
@@ -80,6 +106,12 @@
 	.counter-wrap {
 		position: absolute;
 		top: 20px;
+		left: 20px;
+	}
+
+	.hover-wrap {
+		position: absolute;
+		bottom: 20px;
 		left: 20px;
 	}
 
