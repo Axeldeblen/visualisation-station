@@ -1,5 +1,6 @@
 <style lang="scss">
 	:global(body) {
-		--primary-colour: red;
+		--primary-text-color: white;
+		--primary-background-color: #1a2c38;
 	}
 </style>

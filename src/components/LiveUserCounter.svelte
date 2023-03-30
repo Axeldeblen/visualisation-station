@@ -2,20 +2,28 @@
 	export let userCount: number;
 </script>
 
-<p>
-	{userCount} Users Online
-</p>
-<div class="blob green" />
+<div class="wrapper">
+	<p>
+		{new Intl.NumberFormat().format(userCount)} Users Online
+	</p>
+	<div class="blob green" />
+</div>
 
 <style lang="scss">
 	p {
 		margin: 0;
-		background-color: aliceblue;
 		padding: 20px;
-		color: var(--primary-colour);
+		color: var(--primary-text-color);
+		background-color: var(--primary-background-color);
 	}
 
 	.blob.green {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		position: absolute;
+		top: 5px;
+		right: 5px;
 		background: rgba(51, 217, 178, 1);
 		box-shadow: 0 0 0 0 rgba(51, 217, 178, 1);
 		animation: pulse-green 2s infinite;

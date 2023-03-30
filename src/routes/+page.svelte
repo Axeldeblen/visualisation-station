@@ -10,6 +10,8 @@
 	import { MINUTE, REALTIME_REPORT_INVALIDATION } from '../constants';
 	import { invalidate } from '$app/navigation';
 	import LiveUserCounter from '../components/LiveUserCounter.svelte';
+	import Theme from '../components/Theme.svelte';
+	import Logo from '../components/Logo.svelte';
 
 	export let data;
 
@@ -46,12 +48,16 @@
 	});
 </script>
 
+<Theme />
+
 <div class="wrapper">
 	<div id="globe" class="globe" />
-
 	<button on:click={() => invalidate(REALTIME_REPORT_INVALIDATION)}> Refresh </button>
 	<div class="counter-wrap">
 		<LiveUserCounter userCount={data.activeUsers} />
+	</div>
+	<div class="logo">
+		<Logo />
 	</div>
 </div>
 
@@ -62,6 +68,13 @@
 	}
 	.wrapper {
 		position: relative;
+	}
+
+	.logo {
+		position: absolute;
+		top: 40px;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 
 	.counter-wrap {
